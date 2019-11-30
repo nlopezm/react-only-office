@@ -10,20 +10,38 @@
 npm install --save react-only-office
 ```
 
+```bash
+yarn add react-only-office
+```
+
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react'
+import OnlyOffice, { useOnlyOffice, OODocument } from 'react-only-office'
 
-import MyComponent from 'react-only-office'
-
-class Example extends Component {
+// @see https://api.onlyoffice.com/editors/advanced
+const config = {...}
+const Example = () => {
   render () {
     return (
-      <MyComponent />
+      <OnlyOffice {...config}>
+      <span>Only Office:</span>
+
+      <MyComponent/>
+      </>
     )
   }
 }
+
+const MyComponent = () => {
+  const { getDownloadUrl } = useOnlyOffice();
+  return <button onClick={async ()=>{
+    const url = await getDownloadUrl();
+    window.open(url)
+  }}>Download file!</button>
+}
+
 ```
 
 ## License
