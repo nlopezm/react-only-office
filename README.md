@@ -35,9 +35,9 @@ const Example = () => {
 }
 
 const MyComponent = () => {
-  const { getDownloadUrl } = useOnlyOffice();
+  const { getDownloadURL } = useOnlyOffice();
   return <button onClick={async ()=>{
-    const url = await getDownloadUrl();
+    const url = await getDownloadURL();
     window.open(url)
   }}>Download file!</button>
 }
