@@ -21,6 +21,8 @@ import React from 'react'
 import OnlyOffice, { useOnlyOffice, OODocument } from 'react-only-office'
 
 // @see https://api.onlyoffice.com/editors/advanced
+// @props: scriptUrl (URL to download API)
+// @props:  onlyOfficeId (Document Identifier)
 const config = {...}
 const Example = () => {
   render () {
