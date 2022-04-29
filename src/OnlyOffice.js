@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import { useScript, useEventEmitter } from "./utils/hooks";
 
 export const Context = React.createContext();
@@ -14,24 +14,26 @@ const BaseOnlyOffice = ({
   scriptUrl,
   token,
   type,
-  width
+  width,
 }) => {
-  const config = {
-    document,
-    documentType,
-    editorConfig,
-    events,
-    height,
-    token,
-    type,
-    width
-  };
-  const ref = useRef();
-  const ooEditor = ref.current;
+  const config = useMemo(
+    () => ({
+      document,
+      documentType,
+      editorConfig,
+      events,
+      height,
+      token,
+      type,
+      width,
+    }),
+    [document, documentType, editorConfig, events, height, token, type, width]
+  );
+  const [ooEditor, setOoEditor] = useState();
   const [loaded] = useScript(scriptUrl);
   const emitDownload = useEventEmitter("onDownloadAs");
 
-  const onDownloadAs = e => {
+  const onDownloadAs = (e) => {
     emitDownload(e.data);
     events.onDownloadAs && events.onDownloadAs(e);
   };
@@ -47,10 +49,16 @@ const BaseOnlyOffice = ({
   useEffect(() => {
     if (!loaded || !window.DocsAPI) return;
     // if (ooEditor) ooEditor.destroyEditor();
-    ref.current = new window.DocsAPI.DocEditor(onlyOfficeId, {
+    const newDocument = new window.DocsAPI.DocEditor(onlyOfficeId, {
       ...config,
-      events: { ...events, onDownloadAs }
+      events: { ...events, onDownloadAs },
     });
+    setOoEditor(newDocument);
+    return () => {
+      if (newDocument) {
+        newDocument.destroyEditor();
+      }
+    };
   }, [loaded, config, onlyOfficeId]);
 
   return (
